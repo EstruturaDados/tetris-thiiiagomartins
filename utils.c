@@ -25,6 +25,8 @@ void exibirMenu() {
     // printf("2. Inserir nova peça\n"); # removida para o nível aventureiro
     printf("2. Enviar peça da fila para a reserva\n");
     printf("3. Usar peça da reserva\n");
+    printf("4. Trocar peça da frente com topo da pilha\n");
+    printf("5. Trocar 3 primeiros da fila com os 3 da pilha\n");
     printf("0. Sair\n");
     printf("Escolha uma opcao: ");
 }
@@ -35,6 +37,13 @@ void exibirResultado(FilaPecas *f, PilhaPecas *p) {
     mostrarFila(f);
     mostrarPilha(p);
     printf("------------------------------------------\n");
+}
+
+// função que faz a troca de uma das peças em uma temporária
+static void trocarPeca(Peca *a, Peca *b) {
+    Peca temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 // Funções de FILA
@@ -206,4 +215,60 @@ int pilhaVazia(PilhaPecas *p) {
         return 1;
     }
     return 0;
+}
+
+// Funções de TROCA
+// Troca apenas a primeira peça da fila com a pilha
+int trocarPecaAtual(FilaPecas *f, PilhaPecas *p) {
+    if (filaVazia(f) || pilhaVazia(p)) {
+        return 0;
+    }
+
+    // Localiza os índices da fila e da pilha
+    int idx_fila = f->inicio;
+    int idx_pilha = p->topo - 1;
+    // Cria uma peça temporária para a troca
+    trocarPeca(&(f->pecas[idx_fila]), &(p->pecas[idx_pilha]));
+    printf("[SUCESSO] Troca realizada: [%c %d] da Fila <-> [%c %d] da Pilha.\n",
+       f->pecas[idx_fila].nome,
+       f->pecas[idx_fila].id,
+       p->pecas[idx_pilha].nome,
+       p->pecas[idx_pilha].id
+    );
+    return 1;
+}
+
+// Troca os 3 primeiros elementos da fila com todos os elementos da pilha
+int trocarBloco(FilaPecas *f, PilhaPecas *p) {
+    // Pilha deve estar cheia
+    if (!pilhaCheia(p)) {
+        printf("[ERRO] Pilha de freserva deve ter %d peças (Contagem: %d).\n",
+            TAMANHO_PILHA,
+            p->topo
+        );
+        return 0;
+    }
+
+    // Fila deve ter pelo menos 3 peças
+    if (f->total < TAMANHO_PILHA) {
+        printf("[ERRO] Fila deve ter pelo menos %d peças (Contagem: %d).\n",
+            TAMANHO_PILHA,
+            f->total
+        );
+        return 0;
+    }
+
+    printf("[INFO] Iniciando Troca em Bloco dos 3 primeiros elementos.\n");
+
+    // Faz as trocas dos 3 primeiros elementos
+    for (int i = 0; i < 3; i++) {
+        int idx_fila_circular = (f->inicio + i) % TAMANHO_FILA;
+        int idx_pilha = i;
+
+        // Realiza a troca
+        trocarPeca(&(f->pecas[idx_fila_circular]), &(p->pecas[idx_pilha]));
+    }
+
+    printf("[SUCESSO] Troca em Bloco realizada entre as 3 pecas da Fila e as 3 pecas da Pilha.\n");
+    return 1;
 }

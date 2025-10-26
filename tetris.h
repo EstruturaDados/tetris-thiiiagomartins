@@ -55,5 +55,7 @@ void mostrarFila(FilaPecas *f);
 void mostrarPilha(PilhaPecas *p);
 void exibirResultado(FilaPecas *f, PilhaPecas *p);
 void exibirMenu();
+int trocarPecaAtual(FilaPecas *f, PilhaPecas *p);
+int trocarBloco(FilaPecas *f, PilhaPecas *p);
 
 #endif
