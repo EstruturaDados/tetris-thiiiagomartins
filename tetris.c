@@ -1,23 +1,60 @@
-#include <stdio.h>
+// inclui o arquivo de cabeçalho com as definições e protótipos
+#include "tetris.h"
 
 // Desafio Tetris Stack
 // Tema 3 - Integração de Fila e Pilha
-// Este código inicial serve como base para o desenvolvimento do sistema de controle de peças.
-// Use as instruções de cada nível para desenvolver o desafio.
-
 int main() {
+    srand(time(NULL));
 
-    // 🧩 Nível Novato: Fila de Peças Futuras
-    //
-    // - Crie uma struct Peca com os campos: tipo (char) e id (int).
-    // - Implemente uma fila circular com capacidade para 5 peças.
-    // - Crie funções como inicializarFila(), enqueue(), dequeue(), filaCheia(), filaVazia().
-    // - Cada peça deve ser gerada automaticamente com um tipo aleatório e id sequencial.
-    // - Exiba a fila após cada ação com uma função mostrarFila().
-    // - Use um menu com opções como:
-    //      1 - Jogar peça (remover da frente)
-    //      0 - Sair
-    // - A cada remoção, insira uma nova peça ao final da fila.
+    FilaPecas fila;
+    int opcao = -1;
+    Peca pecaAuxiliar;
+
+    // Inicializa e preenche a fila com 5 peças
+    printf("\n#### TETRIS STACK - CONFIGURAÇÃO INICIAL ####\n");
+    inicializarFila(&fila);
+    mostrarFila(&fila);
+
+    // 2. Loop principal do programa
+    while (opcao != 0) {
+        exibirMenu();
+
+        if (scanf("%d", &opcao) != 1) {
+            while (getchar() != '\n');
+            opcao = -1;
+            printf("[AVISO] Opção inválida. Por favor, digite um número entre 1 - 3.\n");
+            continue;
+        }
+
+        switch (opcao) {
+            case 1: // Jogar peça
+                printf("------------------------------------------\n");
+                dequeue(&fila, &pecaAuxiliar);
+                mostrarFila(&fila);
+                break;
+
+            case 2: // Inserir nova peça
+                printf("------------------------------------------\n");
+                Peca nova = gerarPeca(&(fila.proximo_id));
+                if (enqueue(&fila, nova)) {
+                    fila.proximo_id++;
+                }
+                mostrarFila(&fila);
+                break;
+
+            case 0: // Sair
+                printf("Encerrando o simulador Tetris Stack. Ate a proxima!\n");
+                break;
+
+            default:
+                printf("[AVISO] Opcao %d invalida. Tente novamente.\n", opcao);
+                mostrarFila(&fila);
+                break;
+        }
+    }
+
+    return 0;
+}
 
 
 
@@ -49,8 +86,3 @@ int main() {
     // - O menu deve ficar assim:
     //      4 - Trocar peça da frente com topo da pilha
     //      5 - Trocar 3 primeiros da fila com os 3 da pilha
-
-
-    return 0;
-}
-
